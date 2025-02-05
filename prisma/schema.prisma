@@ -1,0 +1,50 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TrainingType {
+  STRENGTH
+  TRAIL_RUNNING
+  ROAD_RUNNING
+  ROAD_CYCLING
+}
+
+enum GoalType {
+  TRAIL_RUNNING
+  ROAD_RUNNING
+}
+
+model Training {
+  id            String       @id @default(cuid())
+  userId        String
+  description   String
+  date          DateTime
+  type          TrainingType
+  distance      Int?
+  duration      Int?
+  elevationGain Int?
+}
+
+model Goal {
+  id            String   @default(cuid())
+  userId        String   @unique
+  type          GoalType
+  distance      Int
+  elevationGain Int?
+  date          DateTime
+  timeGoal      Int?
+
+  @@id([userId, id])
+}
+
+model User {
+  id       String @id
+  training Json?
+  credits  Int    @default(3)
+}
